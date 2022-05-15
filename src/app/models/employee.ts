@@ -17,12 +17,12 @@ export class Employee {
   phoneNumber: string;
   position_id: number;
   skype?: string;
-  timekeeping_photo?: string;
   updatedAt?: string;
   user_id: number;
   work_status?: string;
   department?: string;
   position?: string;
+  timekeeping_photo?: File;
 
   public static build(): Employee {
     const instance: Employee = new Employee();

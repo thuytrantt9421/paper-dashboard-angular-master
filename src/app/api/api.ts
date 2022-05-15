@@ -10,8 +10,6 @@ const URL = "http://backend-timekeeping.herokuapp.com/api/";
 const options = {
   headers: {
     token: window.sessionStorage.getItem("token"),
-    "Content-Type": "application/json; charset=utf-8",
-    Accept: "application/json",
   },
 };
 
@@ -61,7 +59,7 @@ export class ApiService {
     );
   }
 
-  public createEmployee(employee: Employee) {
+  public createEmployee(employee: any) {
     return this.httpClient
       .post(URL + "employee/createEmployee", employee, options)
       .pipe(

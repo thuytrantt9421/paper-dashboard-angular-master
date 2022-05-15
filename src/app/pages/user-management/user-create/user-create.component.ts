@@ -17,11 +17,12 @@ import { Position } from "app/models/position";
   templateUrl: "user-create.component.html",
 })
 export class UserCreateComponent implements OnInit {
-  selectedImg: Blob;
+  selectedImg: File;
   previews: string = "";
   createEmployeeForm: FormGroup;
   listDepartment: Department[] = [];
   listPosition: Position[] = [];
+  formdata = new FormData();
 
   constructor(
     private route: Router,
@@ -76,8 +77,15 @@ export class UserCreateComponent implements OnInit {
 
       reader.onload = (e: any) => {
         this.previews = e.target.result;
+        // console.log(this.previews);
       };
 
+      this.formdata.append(
+        "timekeeping_photo",
+        this.selectedImg,
+        this.selectedImg.name
+      );
+      console.log(this.formdata);
       reader.readAsDataURL(this.selectedImg);
     }
   }
@@ -85,32 +93,42 @@ export class UserCreateComponent implements OnInit {
   createEmployee() {
     const controls = this.createEmployeeForm.controls;
     console.log(this.createEmployeeForm);
-    if (this.createEmployeeForm.invalid) {
-      return;
-    }
-    let employee: Employee = Employee.build();
+
     this.apiService
       .createUser(controls.username.value, controls.password.value)
       .subscribe((res) => {
         debugger;
         console.log(res);
         if (res) {
-          employee.name = `${controls.lastName.value} ${controls.firstName.value}`;
-          employee.firstName = controls.firstName.value;
-          employee.lastName = controls.lastName.value;
-          employee.DOB = controls.DOB.value.toString();
-          employee.gender = controls.gender.value;
-          employee.phoneNumber = controls.phoneNumber.value.toString();
-          employee.department_id = Number(controls.department_id.value);
-          employee.position_id = Number(controls.position_id.value);
-          employee.personalEmail = controls.personalEmail.value;
-          employee.skype = controls.skype?.value;
-          // employee.facebook = controls.facebook?.value;
-          employee.address = controls.address?.value;
-          employee.user_id = res.id;
-          employee.cccd = controls.cccd.value;
-          console.log(employee);
-          this.apiService.createEmployee(employee).subscribe((result) => {
+          this.formdata.append(
+            "name",
+            `${controls.lastName.value} ${controls.firstName.value}`
+          );
+          this.formdata.append("firstName", controls.firstName.value);
+          this.formdata.append("lastName", controls.lastName.value);
+          this.formdata.append("DOB", controls.DOB.value.toString());
+          this.formdata.append("gender", controls.gender.value);
+          this.formdata.append(
+            "phoneNumber",
+            controls.phoneNumber.value.toString()
+          );
+          this.formdata.append("department_id", controls.department_id.value);
+          this.formdata.append("position_id", controls.position_id.value);
+          this.formdata.append("personalEmail", controls.personalEmail.value);
+          this.formdata.append(
+            "skype",
+            controls.skype?.value ? controls.skype.value : ""
+          );
+          this.formdata.append(
+            "address",
+            controls.address?.value ? controls.address.value : ""
+          );
+          this.formdata.append("cccd", controls.cccd.value);
+          this.formdata.append("user_id", res.id.toString());
+          this.formdata.append("work_status", "");
+          this.formdata.append("companyEmail", "");
+
+          this.apiService.createEmployee(this.formdata).subscribe((result) => {
             console.log(result);
             alert("Thêm mới hồ sơ thành công!");
             this.route.navigateByUrl("/user");

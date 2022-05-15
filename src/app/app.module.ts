@@ -18,6 +18,7 @@ import { HotTableModule } from "@handsontable/angular";
 import { AdminLayoutModule } from "./pages/admin-layout/admin-layout.module";
 import { ApiService } from "./api/api";
 import { HttpClientModule } from "@angular/common/http";
+import { AuthGuard } from "./login/auth.guard";
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -37,7 +38,7 @@ import { HttpClientModule } from "@angular/common/http";
     AdminLayoutModule,
     HttpClientModule,
   ],
-  providers: [ApiService],
+  providers: [ApiService, AuthGuard],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
