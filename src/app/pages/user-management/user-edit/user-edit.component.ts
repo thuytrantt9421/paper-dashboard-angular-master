@@ -17,13 +17,13 @@ import { Position } from "app/models/position";
   templateUrl: "user-edit.component.html",
 })
 export class UserEditComponent implements OnInit {
-  selectedImg: Blob;
   previews: string = "";
   editEmployeeForm: FormGroup;
   listDepartment: Department[] = [];
   listPosition: Position[] = [];
   employeeId: string;
   employeeName: string = "";
+  timekeeping_photo: string;
 
   constructor(
     private route: Router,
@@ -81,6 +81,7 @@ export class UserEditComponent implements OnInit {
         return;
       }
       this.employeeName = res.name;
+      this.previews = res.timekeeping_photo;
       controls.firstName.patchValue(res.firstName);
       controls.lastName.patchValue(res.lastName);
       controls.DOB.patchValue(new Date(res.DOB).toISOString().slice(0, 10));
@@ -100,26 +101,6 @@ export class UserEditComponent implements OnInit {
         // console.log(result);
       });
     });
-  }
-
-  uploadImg() {
-    const inputFile = document.getElementById("file");
-    inputFile.click();
-  }
-
-  async changeImage(event: any) {
-    this.selectedImg = event.target.files ? event.target.files[0] : null;
-    console.log(this.selectedImg);
-    this.previews = "";
-    if (this.selectedImg) {
-      const reader = new FileReader();
-
-      reader.onload = (e: any) => {
-        this.previews = e.target.result;
-      };
-
-      reader.readAsDataURL(this.selectedImg);
-    }
   }
 
   updateEmployee() {

@@ -41,6 +41,19 @@ export const AppRoutes: Routes = [
     ],
   },
   {
+    path: "request",
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: "",
+        loadChildren: () =>
+          import("./pages/request-management/request-management.routing").then(
+            (x) => x.RequestRoutingModule
+          ),
+      },
+    ],
+  },
+  {
     path: "**",
     redirectTo: "login",
   },

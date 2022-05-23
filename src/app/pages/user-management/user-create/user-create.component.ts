@@ -23,6 +23,7 @@ export class UserCreateComponent implements OnInit {
   listDepartment: Department[] = [];
   listPosition: Position[] = [];
   formdata = new FormData();
+  file_content: string = "";
 
   constructor(
     private route: Router,
@@ -33,7 +34,6 @@ export class UserCreateComponent implements OnInit {
   ngOnInit() {
     this.apiService.getListDepartment().subscribe((res) => {
       this.listDepartment = res.departments;
-      console.log(this.listDepartment);
     });
     this.apiService.getListPosition().subscribe((res) => {
       this.listPosition = res.positons;
@@ -77,15 +77,19 @@ export class UserCreateComponent implements OnInit {
 
       reader.onload = (e: any) => {
         this.previews = e.target.result;
-        // console.log(this.previews);
+
+        // var b64 = this.previews.replace(/^data:.+;base64,/, "");
+        // console.log(b64.length);
+        // this.file_content = b64;
+
+        // var blob = window.dataURLtoBlob(reader.result);
+
+        // const temp = atob(b64);
+        // console.log(temp);
+
+        // this.formdata.append("timekeeping_photo", this.selectedImg);
       };
 
-      this.formdata.append(
-        "timekeeping_photo",
-        this.selectedImg,
-        this.selectedImg.name
-      );
-      console.log(this.formdata);
       reader.readAsDataURL(this.selectedImg);
     }
   }
@@ -97,41 +101,66 @@ export class UserCreateComponent implements OnInit {
     this.apiService
       .createUser(controls.username.value, controls.password.value)
       .subscribe((res) => {
-        debugger;
         console.log(res);
         if (res) {
-          this.formdata.append(
-            "name",
-            `${controls.lastName.value} ${controls.firstName.value}`
-          );
-          this.formdata.append("firstName", controls.firstName.value);
-          this.formdata.append("lastName", controls.lastName.value);
-          this.formdata.append("DOB", controls.DOB.value.toString());
-          this.formdata.append("gender", controls.gender.value);
-          this.formdata.append(
-            "phoneNumber",
-            controls.phoneNumber.value.toString()
-          );
-          this.formdata.append("department_id", controls.department_id.value);
-          this.formdata.append("position_id", controls.position_id.value);
-          this.formdata.append("personalEmail", controls.personalEmail.value);
-          this.formdata.append(
-            "skype",
-            controls.skype?.value ? controls.skype.value : ""
-          );
-          this.formdata.append(
-            "address",
-            controls.address?.value ? controls.address.value : ""
-          );
-          this.formdata.append("cccd", controls.cccd.value);
-          this.formdata.append("user_id", res.id.toString());
-          this.formdata.append("work_status", "");
-          this.formdata.append("companyEmail", "");
+          // this.formdata.append(
+          //   "name",
+          //   `${controls.lastName.value} ${controls.firstName.value}`
+          // );
+          // this.formdata.append("firstName", controls.firstName.value);
+          // this.formdata.append("lastName", controls.lastName.value);
+          // this.formdata.append("DOB", controls.DOB.value.toString());
+          // this.formdata.append("gender", controls.gender.value);
+          // this.formdata.append(
+          //   "phoneNumber",
+          //   controls.phoneNumber.value.toString()
+          // );
+          // this.formdata.append("department_id", controls.department_id.value);
+          // this.formdata.append("position_id", controls.position_id.value);
+          // this.formdata.append("personalEmail", controls.personalEmail.value);
+          // this.formdata.append(
+          //   "skype",
+          //   controls.skype?.value ? controls.skype.value : ""
+          // );
+          // this.formdata.append(
+          //   "address",
+          //   controls.address?.value ? controls.address.value : ""
+          // );
+          // this.formdata.append("cccd", controls.cccd.value);
+          // this.formdata.append("user_id", res.id.toString());
+          // this.formdata.append("work_status", "");
+          // this.formdata.append("companyEmail", "");
 
-          this.apiService.createEmployee(this.formdata).subscribe((result) => {
+          let employee = new Employee();
+          employee.name = `${controls.lastName.value} ${controls.firstName.value}`;
+          employee.firstName = controls.firstName.value;
+          employee.lastName = controls.lastName.value;
+          employee.DOB = controls.DOB.value.toString();
+          employee.address = controls.address?.value
+            ? controls.address.value
+            : "";
+          employee.work_status = null;
+          employee.skype = controls.skype?.value ? controls.skype.value : "";
+          employee.gender = controls.gender.value;
+          employee.personalEmail = controls.personalEmail.value;
+          employee.companyEmail = null;
+          employee.department_id = Number(controls.department_id.value);
+          employee.position_id = Number(controls.position_id.value);
+          employee.phoneNumber = controls.phoneNumber.value.toString();
+          employee.user_id = res.id;
+          employee.cccd = controls.cccd.value;
+          // employee.timekeeping_photo = this.selectedImg;
+
+          this.apiService.uploadFile(this.selectedImg).subscribe((result) => {
             console.log(result);
-            alert("Thêm mới hồ sơ thành công!");
-            this.route.navigateByUrl("/user");
+            if (result) {
+              employee.timekeeping_photo = result.secure_url;
+              this.apiService.createEmployee(employee).subscribe((rs) => {
+                console.log(rs);
+                alert("Thêm mới hồ sơ thành công!");
+                this.route.navigateByUrl("/user");
+              });
+            }
           });
         }
       });

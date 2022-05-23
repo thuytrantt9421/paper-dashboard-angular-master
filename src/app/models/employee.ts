@@ -22,7 +22,7 @@ export class Employee {
   work_status?: string;
   department?: string;
   position?: string;
-  timekeeping_photo?: File;
+  timekeeping_photo?: string;
 
   public static build(): Employee {
     const instance: Employee = new Employee();

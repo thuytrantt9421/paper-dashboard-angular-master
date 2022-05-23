@@ -5,6 +5,7 @@ import { BehaviorSubject } from "rxjs";
 import { Employee } from "app/models/employee";
 import { Position } from "app/models/position";
 import { Department } from "app/models/department";
+import { RequestForm } from "app/models/request";
 
 const URL = "http://backend-timekeeping.herokuapp.com/api/";
 const options = {
@@ -39,6 +40,14 @@ export class userInfo {
   password: string;
   role: string;
   disable: false;
+}
+export class UploadRes {
+  asset_id: string;
+  public_id: string;
+  secure_url: string;
+}
+export class RequestRes {
+  listDonxinnghi: [RequestForm[]];
 }
 
 @Injectable({
@@ -138,7 +147,7 @@ export class ApiService {
 
   public getEmployeeInfo(id: string) {
     return this.httpClient
-      .get<Employee>(`${URL}employee/getEmployeeInfo?id=${id}`, options)
+      .get<Employee>(`${URL}employee/getEmployeeInfoForWeb?id=${id}`, options)
       .pipe(
         map((result) => {
           return result;
@@ -157,6 +166,55 @@ export class ApiService {
   public deleteUser(id: number) {
     return this.httpClient
       .delete(`${URL}auth/deleteUser?id=${id}`, options)
+      .pipe(
+        map((result) => {
+          return result;
+        })
+      );
+  }
+
+  public uploadFile(file: File) {
+    let url = "https://api.cloudinary.com/v1_1/dfglhscaj/image/upload";
+    let formData = new FormData();
+
+    formData.append("file", file);
+    formData.append("upload_preset", "timekeeping");
+
+    if (file.size > 5000000) {
+      alert("File cannot be more than 5 MB");
+      return;
+    }
+
+    return this.httpClient.post<UploadRes>(url, formData).pipe(
+      map((result) => {
+        return result;
+      })
+    );
+  }
+
+  public getListRequest() {
+    return this.httpClient
+      .get<RequestRes>(URL + "donxinnghi/adminGetList", options)
+      .pipe(
+        map((result) => {
+          return result;
+        })
+      );
+  }
+
+  public acceptRequest(id: number) {
+    return this.httpClient
+      .put(`${URL}donxinnghi/acceptDonxinnghi/${id}`, null, options)
+      .pipe(
+        map((result) => {
+          return result;
+        })
+      );
+  }
+
+  public refuseRequest(id: number) {
+    return this.httpClient
+      .put(`${URL}donxinnghi/refuseDonxinnghi/${id}`, null, options)
       .pipe(
         map((result) => {
           return result;

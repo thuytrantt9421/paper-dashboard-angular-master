@@ -14,19 +14,15 @@
               </div>
               <div class="card-body">
                 <div class="author">
-                  <img
+                  <!-- <img
                     (click)="uploadImg()"
                     *ngIf="!selectedImg"
                     class="avatar border-gray"
                     style="cursor: pointer"
-                    src="assets/img/default-avatar.png"
+                    [src]="timekeeping_photo"
                     alt="..."
-                  />
-                  <img
-                    *ngIf="selectedImg"
-                    class="avatar border-gray"
-                    [src]="previews"
-                  />
+                  /> -->
+                  <img class="avatar border-gray" [src]="previews" />
                   <h3
                     class="title"
                     style="color: #ef8157"
@@ -34,14 +30,6 @@
                   >
                     {{ employeeName }}
                   </h3>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id="file"
-                    style="display: none"
-                    (change)="changeImage($event)"
-                    formControlName="timekeeping_photo"
-                  />
                 </div>
               </div>
             </div>

@@ -14,8 +14,14 @@ export const ROUTES: RouteInfo[] = [
   // { path: '/notifications', title: 'Notifications',     icon:'nc-bell-55',    class: '' },
   {
     path: "/user",
-    title: "Danh sách người dùng",
-    icon: "nc-tile-56",
+    title: "Quản lý người dùng",
+    icon: "nc-badge",
+    class: "",
+  },
+  {
+    path: "/request",
+    title: "Quản lý yêu cầu",
+    icon: "nc-paper",
     class: "",
   },
   // { path: "/user", title: "User Profile", icon: "nc-single-02", class: "" },
